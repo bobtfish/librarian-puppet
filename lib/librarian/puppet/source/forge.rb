@@ -101,7 +101,7 @@ module Librarian
             # Check for bad exit code
             unless $? == 0
               # Rollback the directory if the puppet module had an error
-              path.unlink
+              path.rmtree
               raise Error, "Error executing puppet module install:\n#{command}\nError:\n#{output}"
             end
 
