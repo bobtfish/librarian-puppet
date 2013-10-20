@@ -11,6 +11,8 @@ module Librarian
           attr_accessor :source, :name
           private :source=, :name=
 
+          @@have_checked_puppet_module_options = false
+
           def initialize(source, name)
             self.source = source
             self.name = name
@@ -108,11 +110,14 @@ module Librarian
           end
 
           def check_puppet_module_options
-            min_version    = Gem::Version.create('2.7.13')
-            puppet_version = Gem::Version.create(`puppet --version`.split(' ').first.strip.gsub('-', '.'))
+            if !@@have_checked_puppet_module_options
+              @@have_checked_puppet_module_options = true
+              min_version    = Gem::Version.create('2.7.13')
+              puppet_version = Gem::Version.create(`puppet --version`.split(' ').first.strip.gsub('-', '.'))
 
-            if puppet_version < min_version
-              raise Error, "To get modules from the forge, we use the puppet faces module command. For this you need at least puppet version 2.7.13 and you have #{puppet_version}"
+              if puppet_version < min_version
+                raise Error, "To get modules from the forge, we use the puppet faces module command. For this you need at least puppet version 2.7.13 and you have #{puppet_version}"
+              end
             end
           end
 
